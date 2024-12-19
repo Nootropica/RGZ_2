@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Поиск пользователей</h1>
+
+        <nav>
+            <a href="{{ url_for('profile') }}">Профиль</a>
+        </nav>
+
+        <!-- Форма поиска -->
+        <form action="{{ url_for('search') }}" method="POST">
+            <label for="name">Имя:</label>
+            <input type="text" name="name" placeholder="Введите имя">
+
+            <label for="age">Возраст:</label>
+            <input type="number" name="age" placeholder="Введите возраст">
+
+            <button type="submit">Найти</button>
+        </form>
+
+        <!-- Результаты поиска -->
+        {% if users %}
+            <h2>Результаты поиска:</h2>
+            <div class="users">
+                {% for user in users %}
+                    <div class="user">
+                        <div class="avatar">
+                            {% if user['photo'] %}
+                                <img src="{{ url_for('static', filename=user['photo']) }}" alt="Аватарка">
+                            {% else %}
+                                <p>Фото не загружено</p>
+                            {% endif %}
+                        </div>
+                        <div class="info">
+                            <p><strong>Имя:</strong> {{ user['name'] }}</p>
+                            <p><strong>Возраст:</strong> {{ user['age'] }}</p>
+                            <p><strong>О себе:</strong> {{ user['about'] }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            <div class="pagination">
+                <!-- Кнопка "Вернуться назад" -->
+                {% if page > 1 %}
+                    <a href="{{ url_for('search', page=1) }}">Вернуться назад</a>
+                {% endif %}
+
+                <!-- Кнопка "Следующие" -->
+                {% if total_pages > page %}
+                    <a href="{{ url_for('search', page=page + 1) }}">Следующие</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>По вашему запросу ничего не найдено.</p>
+        {% endif %}
+
+        <!-- Сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

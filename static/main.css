@@ -1,0 +1,202 @@
+/* Общие стили */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    margin: 0;
+    padding: 0;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    width: 100%;
+    padding: 40px;
+    background: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input, select, textarea, button {
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+button {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.messages {
+    margin-top: 20px;
+}
+
+.success {
+    color: #28a745;
+}
+
+.error {
+    color: #dc3545;
+}
+
+/* Стили для форм */
+#register-form, #login-form {
+    margin-top: 30px;
+}
+
+#register-form h2, #login-form h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#register-form input, #login-form input {
+    width: 100%;
+}
+
+#register-form button, #login-form button {
+    margin-top: 20px;
+}
+
+/* Стили для навигации */
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #333;
+    background-color: #9b9b9b;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+nav a.active {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* Стили для аватарки */
+.avatar {
+    width: 300px; /* Фиксированная ширина */
+    height: 300px; /* Фиксированная высота */
+    margin: 20px auto; /* Центрирование блока */
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden; /* Скрываем части изображения, выходящие за пределы блока */
+    background-color: #f9f9f9; /* Фон для пустого блока */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar img {
+    width: 100%; /* Изображение занимает всю ширину блока */
+    height: 100%; /* Изображение занимает всю высоту блока */
+    object-fit: cover; /* Изображение заполняет блок, сохраняя пропорции */
+}
+
+.avatar p {
+    font-style: italic;
+    color: #888;
+    margin: 0;
+}
+
+/* Стили для результатов поиска */
+.users {
+    display: flex; /* Используем flexbox */
+    flex-wrap: nowrap; /* Запрещаем перенос элементов на новую строку */
+    gap: 20px; /* Расстояние между пользователями */
+    overflow-x: auto; /* Добавляем горизонтальный скролл, если элементов много */
+    padding: 10px 0; /* Отступы для скролла */
+    justify-content: center;
+}
+
+.user {
+    flex: 0 0 auto; /* Запрещаем элементам растягиваться */
+    width: 200px; /* Фиксированная ширина для каждого пользователя */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.user .avatar {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.user .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user .info {
+    font-size: 14px;
+}
+
+.user .info p {
+    margin: 5px 0;
+}

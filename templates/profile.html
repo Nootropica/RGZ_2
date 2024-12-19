@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Ваш профиль</h1>
+
+        <!-- Навигация -->
+        <nav>
+            <a href="{{ url_for('search') }}">Поиск</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+
+        <!-- Отображение аватарки -->
+        <div class="avatar">
+            {% if user['photo'] %}
+                <img src="{{ url_for('static', filename=user['photo']) }}" alt="Аватарка">
+            {% else %}
+                <p>Фото не загружено</p>
+            {% endif %}
+        </div>
+
+        <!-- Форма редактирования анкеты -->
+        <form action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data">
+            <label for="name">Имя:</label>
+            <input type="text" name="name" value="{{ user['name'] }}" required>
+
+            <label for="age">Возраст:</label>
+            <input type="number" name="age" value="{{ user['age'] }}" required>
+
+            <label for="gender">Ваш пол:</label>
+            <select name="gender" required>
+                <option value="male" {% if user['gender'] == 'male' %}selected{% endif %}>Мужчина</option>
+                <option value="female" {% if user['gender'] == 'female' %}selected{% endif %}>Женщина</option>
+            </select>
+
+            <label for="seeking_gender">Пол для поиска:</label>
+            <select name="seeking_gender" required>
+                <option value="male" {% if user['seeking_gender'] == 'male' %}selected{% endif %}>Мужчина</option>
+                <option value="female" {% if user['seeking_gender'] == 'female' %}selected{% endif %}>Женщина</option>
+            </select>
+
+            <label for="about">О себе:</label>
+            <textarea name="about">{{ user['about'] }}</textarea>
+
+            <label for="photo">Загрузите фотографию:</label>
+            <input type="file" name="photo" accept="image/*">
+
+            <button type="submit">Сохранить изменения</button>
+        </form>
+
+        <!-- Кнопки для скрытия и удаления анкеты -->
+        <form action="{{ url_for('hide_profile') }}" method="POST">
+            <button type="submit">Скрыть анкету</button>
+        </form>
+
+        <form id="delete-profile-form" action="{{ url_for('delete_profile') }}" method="POST">
+            <button type="button" id="delete-profile-btn">Удалить аккаунт</button>
+        </form>
+
+        <!-- Сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- JavaScript для подтверждения удаления -->
+    <script>
+        document.getElementById('delete-profile-btn').addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите удалить свой аккаунт? Это действие необратимо.')) {
+                document.getElementById('delete-profile-form').submit();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт знакомств</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Добро пожаловать на сайт знакомств</h1>
+
+        <!-- Навигация -->
+        {% if not session.get('user_id') %}
+        <!-- <nav>
+            <a href="{{ url_for('index') }}">Главная</a>
+        </nav> -->
+        {% endif %}
+
+        <!-- Форма регистрации -->
+        <div id="register-form">
+            <h2>Регистрация</h2>
+            <form action="{{ url_for('register') }}" method="POST" enctype="multipart/form-data">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <input type="text" name="name" placeholder="Имя" required>
+                <input type="number" name="age" placeholder="Возраст" required>
+                
+                <!-- Ваш пол -->
+                <label for="gender">Ваш пол:</label>
+                <select name="gender" id="gender" required>
+                    <option value="male">Мужчина</option>
+                    <option value="female">Женщина</option>
+                </select>
+                
+                <!-- Пол для поиска -->
+                <label for="seeking_gender">Пол для поиска:</label>
+                <select name="seeking_gender" id="seeking_gender" required>
+                    <option value="male">Мужчина</option>
+                    <option value="female">Женщина</option>
+                </select>
+                
+                <textarea name="about" placeholder="О себе"></textarea>
+                
+                <!-- Загрузка фотографии -->
+                <label for="photo">Загрузите фотографию:</label>
+                <input type="file" name="photo" id="photo" accept="image/*">
+                
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <!-- Форма авторизации -->
+        {% if not session.get('user_id') %}
+        <div id="login-form">
+            <h2>Авторизация</h2>
+            <form action="{{ url_for('login') }}" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Сообщения -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
