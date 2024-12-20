@@ -1,13 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, current_app
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from werkzeug.utils import secure_filename
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from math import ceil
+import sqlite3
+from os import path
 
 app = Flask(__name__)
-app.secret_key = 'секретно-секретный секрет'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
+app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
 # Настройка загрузки файлов
 UPLOAD_FOLDER = 'static/uploads'
@@ -20,13 +23,21 @@ def allowed_file(filename):
 
 # Функция для подключения к базе данных
 def db_connect():
-    conn = psycopg2.connect(
-        host='127.0.0.1',
-        database='RGZ_BACK',
-        user='rgz_back',
-        password='123'
-    )
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    if current_app.config['DB_TYPE'] == 'postgres':
+        conn = psycopg2.connect(
+            host='127.0.0.1',
+            database='RGZ_BACK',
+            user='rgz_back',
+            password='123'
+        )
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+    else:
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
     return conn, cur
 
 # Функция для закрытия соединения с базой данных
