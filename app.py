@@ -9,8 +9,12 @@ import sqlite3
 from os import path
 
 app = Flask(__name__)
+
+# Устанавливаем DB_TYPE в 'sqlite'
+app.config['DB_TYPE'] = 'sqlite'
+
+# Остальные настройки приложения
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
-app.config['DB_TYPE'] = os.getenv('DB_TYPE', 'postgres')
 
 # Настройка загрузки файлов
 UPLOAD_FOLDER = 'static/uploads'
