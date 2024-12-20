@@ -1,12 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, current_app
-import psycopg2
-from psycopg2.extras import RealDictCursor
+import sqlite3
 from werkzeug.utils import secure_filename
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from math import ceil
-import sqlite3
-from os import path
 
 app = Flask(__name__)
 
@@ -27,7 +24,8 @@ def allowed_file(filename):
 
 # Функция для подключения к базе данных
 def db_connect():
-    conn = sqlite3.connect('vladislavpechenkin/RGZ_2/database.db')
+    db_path = os.path.join(os.getcwd(), 'database.db')
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row 
     cur = conn.cursor()
     return conn, cur
@@ -71,7 +69,7 @@ def register():
     conn, cur = db_connect()
 
     # Проверка, существует ли пользователь с таким email
-    cur.execute("SELECT * FROM users WHERE email=%s;", (email,))
+    cur.execute("SELECT * FROM users WHERE email=?;", (email,))
     existing_user = cur.fetchone()
     if existing_user:
         db_close(conn, cur)
@@ -83,7 +81,7 @@ def register():
     # Добавление нового пользователя в базу данных
     cur.execute("""
         INSERT INTO users (email, password, name, age, gender, seeking_gender, about, photo)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?);
     """, (email, hashed_password, name, age, gender, seeking_gender, about, photo_path))
 
     db_close(conn, cur)
@@ -123,7 +121,7 @@ def login():
     conn, cur = db_connect()
 
     # Поиск пользователя по email
-    cur.execute("SELECT * FROM users WHERE email=%s;", (email,))
+    cur.execute("SELECT * FROM users WHERE email=?;", (email,))
     user = cur.fetchone()
 
     if not user or not check_password_hash(user['password'], password):
@@ -151,7 +149,7 @@ def profile():
         return redirect(url_for('login'))
 
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM users WHERE id=%s;", (user_id,))
+    cur.execute("SELECT * FROM users WHERE id=?;", (user_id,))
     user = cur.fetchone()
     db_close(conn, cur)
 
@@ -174,8 +172,8 @@ def profile():
 
         conn, cur = db_connect()
         cur.execute("""
-            UPDATE users SET name=%s, age=%s, gender=%s, seeking_gender=%s, about=%s, photo=%s
-            WHERE id=%s;
+            UPDATE users SET name=?, age=?, gender=?, seeking_gender=?, about=?, photo=?
+            WHERE id=?;
         """, (name, age, gender, seeking_gender, about, photo_path, user_id))
         db_close(conn, cur)
         flash('Анкета успешно обновлена', 'success')
@@ -192,7 +190,7 @@ def hide_profile():
         return redirect(url_for('login'))
 
     conn, cur = db_connect()
-    cur.execute("UPDATE users SET is_hidden=TRUE WHERE id=%s;", (user_id,))
+    cur.execute("UPDATE users SET is_hidden=TRUE WHERE id=?;", (user_id,))
     db_close(conn, cur)
     flash('Ваша анкета скрыта', 'success')
     return redirect(url_for('profile'))
@@ -206,7 +204,7 @@ def delete_profile():
         return redirect(url_for('login'))
 
     conn, cur = db_connect()
-    cur.execute("DELETE FROM users WHERE id=%s;", (user_id,))
+    cur.execute("DELETE FROM users WHERE id=?;", (user_id,))
     db_close(conn, cur)
     session.pop('user_id', None)
     flash('Ваш аккаунт удален', 'success')
@@ -222,7 +220,7 @@ def search():
         return redirect(url_for('login'))
 
     conn, cur = db_connect()
-    cur.execute("SELECT * FROM users WHERE id=%s;", (user_id,))
+    cur.execute("SELECT * FROM users WHERE id=?;", (user_id,))
     current_user = cur.fetchone()
 
     # Определение текущей страницы
@@ -236,7 +234,7 @@ def search():
         # Фильтрация по имени и возрасту
         query = """
             SELECT * FROM users
-            WHERE name ILIKE %s AND age=%s AND gender=%s AND is_hidden=FALSE;
+            WHERE name LIKE ? AND age=? AND gender=? AND is_hidden=FALSE;
         """
         params = (f"%{name}%", age, current_user['seeking_gender'])
         cur.execute(query, params)
@@ -253,7 +251,7 @@ def search():
         # По умолчанию показываем всех пользователей, соответствующих критериям поиска
         query = """
             SELECT * FROM users
-            WHERE gender=%s AND is_hidden=FALSE;
+            WHERE gender=? AND is_hidden=FALSE;
         """
         cur.execute(query, (current_user['seeking_gender'],))
         users = cur.fetchall()
