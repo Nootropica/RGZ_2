@@ -27,7 +27,7 @@ def allowed_file(filename):
 
 # Функция для подключения к базе данных
 def db_connect():
-    conn = sqlite3.connect('RGZ_2/database.db')
+    conn = sqlite3.connect('vladislavpechenkin/RGZ_2/database.db')
     conn.row_factory = sqlite3.Row 
     cur = conn.cursor()
     return conn, cur
