@@ -11,11 +11,12 @@
         <h1>Добро пожаловать на сайт знакомств</h1>
 
         <!-- Навигация -->
-        {% if not session.get('user_id') %}
-        <!-- <nav>
-            <a href="{{ url_for('index') }}">Главная</a>
-        </nav> -->
-        {% endif %}
+        <nav>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('profile') }}">Профиль</a>
+                <a href="{{ url_for('logout') }}">Выйти</a>
+            {% endif %}
+        </nav>
 
         <!-- Форма регистрации -->
         <div id="register-form">
@@ -51,7 +52,6 @@
         </div>
 
         <!-- Форма авторизации -->
-        {% if not session.get('user_id') %}
         <div id="login-form">
             <h2>Авторизация</h2>
             <form action="{{ url_for('login') }}" method="POST">
@@ -60,7 +60,6 @@
                 <button type="submit">Войти</button>
             </form>
         </div>
-        {% endif %}
 
         <!-- Сообщения -->
         {% with messages = get_flashed_messages(with_categories=true) %}

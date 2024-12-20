@@ -102,13 +102,31 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        # Возвращаем простую HTML-страницу вместо login.html
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Вход</title>
+        </head>
+        <body>
+            <h1>Вход</h1>
+            <form method="POST">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required><br><br>
+                <button type="submit">Войти</button>
+            </form>
+        </body>
+        </html>
+        """
 
     email = request.form.get('email')
     password = request.form.get('password')
 
     if not (email and password):
-        return render_template('login.html', error='Заполните все поля')
+        return "Заполните все поля", 400
 
     conn, cur = db_connect()
 
@@ -118,7 +136,7 @@ def login():
 
     if not user or not check_password_hash(user['password'], password):
         db_close(conn, cur)
-        return render_template('login.html', error='Неверный email или пароль')
+        return "Неверный email или пароль", 401
 
     db_close(conn, cur)
     session['user_id'] = user['id']
