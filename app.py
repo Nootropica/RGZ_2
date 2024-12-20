@@ -14,7 +14,7 @@ app.config['DB_TYPE'] = 'sqlite'
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'секретно-секретный секрет')
 
 # Настройка загрузки файлов
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static', 'uploads')  # Абсолютный путь
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'RGZ_2', 'static', 'uploads')  # Абсолютный путь
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
